@@ -2,6 +2,7 @@ package braintree
 
 import (
 	"bytes"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"log"
@@ -87,6 +88,67 @@ func (g *Braintree) execute(method, path string, xmlObj interface{}) (*Response,
 	}
 
 	req.Header.Set("Content-Type", "application/xml")
+	req.Header.Set("Accept", "application/xml")
+	req.Header.Set("Accept-Encoding", "gzip")
+	req.Header.Set("User-Agent", fmt.Sprintf("Braintree Go %s", LibraryVersion))
+	req.Header.Set("X-ApiVersion", "3")
+	req.SetBasicAuth(g.PublicKey, g.PrivateKey)
+
+	httpClient := g.HttpClient
+	if httpClient == nil {
+		httpClient = http.DefaultClient
+	}
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	btr := &Response{
+		Response: resp,
+	}
+	err = btr.unpackBody()
+	if err != nil {
+		return nil, err
+	}
+
+	if g.Logger != nil {
+		g.Logger.Printf("<\n%s", string(btr.Body))
+	}
+
+	err = btr.apiError()
+	if err != nil {
+		return nil, err
+	}
+	return btr, nil
+}
+
+func (g *Braintree) executeJSON(method, path string, jsonObj interface{}) (*Response, error) {
+	var buf bytes.Buffer
+	if jsonObj != nil {
+		jsonBody, err := json.Marshal(jsonObj)
+		if err != nil {
+			return nil, err
+		}
+		_, err = buf.Write(jsonBody)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	url := g.MerchantURL() + "/" + path
+
+	if g.Logger != nil {
+		g.Logger.Printf("> %s %s\n%s", method, url, buf.String())
+	}
+
+	req, err := http.NewRequest(method, url, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/xml")
 	req.Header.Set("Accept-Encoding", "gzip")
 	req.Header.Set("User-Agent", fmt.Sprintf("Braintree Go %s", LibraryVersion))
