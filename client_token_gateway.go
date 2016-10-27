@@ -2,7 +2,7 @@ package braintree
 
 import "encoding/xml"
 
-const clientTokenVersion = 2
+const clientTokenVersion = 3
 
 type ClientTokenGateway struct {
 	*Braintree

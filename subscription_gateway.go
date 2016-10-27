@@ -5,7 +5,8 @@ type SubscriptionGateway struct {
 }
 
 func (g *SubscriptionGateway) Create(sub *Subscription) (*Subscription, error) {
-	resp, err := g.execute("POST", "subscriptions", sub)
+	obj := map[string]interface{}{"subscription": sub}
+	resp, err := g.executeJSON("POST", "subscriptions", obj)
 	if err != nil {
 		return nil, err
 	}
