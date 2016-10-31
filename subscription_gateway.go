@@ -18,7 +18,8 @@ func (g *SubscriptionGateway) Create(sub *Subscription) (*Subscription, error) {
 }
 
 func (g *SubscriptionGateway) Update(sub *Subscription) (*Subscription, error) {
-	resp, err := g.execute("PUT", "subscriptions/"+sub.Id, sub)
+	obj := map[string]interface{}{"subscription": sub}
+	resp, err := g.executeJSON("PUT", "subscriptions/"+sub.Id, obj)
 	if err != nil {
 		return nil, err
 	}
