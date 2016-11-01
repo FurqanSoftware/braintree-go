@@ -37,6 +37,16 @@ func (h hmacer) verifySignature(signature, payload string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
+	if hmac.Equal([]byte(expectedSignature), []byte(signature)) {
+		return true, nil
+	}
+
+	expectedSignature, err = h.hmac(payload + "\n")
+	if err != nil {
+		return false, err
+	}
+
 	return hmac.Equal([]byte(expectedSignature), []byte(signature)), nil
 }
 
