@@ -39,7 +39,7 @@ type Subscription struct {
 	TrialPeriod             *nullable.NullBool   `xml:"trial-period,omitempty" json:"trial_period,omitempty"`
 	Transactions            *Transactions        `xml:"transactions,omitempty" json:"transactions,omitempty"`
 	Options                 *SubscriptionOptions `xml:"options,omitempty" json:"options,omitempty"`
-	AddOns                  *SubscriptionAddons  `xml:"add-ons,omitempty" json:"add_ons,omitempty"`
+	AddOns                  *AddOnList           `xml:"add-ons,omitempty" json:"add_ons,omitempty"`
 	// Descriptor              interface{}   `xml:"descriptor,omitempty"`   // struct with name, phone
 }
 
@@ -53,26 +53,4 @@ type SubscriptionOptions struct {
 	ReplaceAllAddOnsAndDiscounts         bool `xml:"replace-all-add-ons-and-discounts,omitempty" json:"replace_all_add_ons_and_discounts,omitempty"`
 	RevertSubscriptionOnProrationFailure bool `xml:"revert-subscription-on-proration-failure,omitempty" json:"revert_subscription_on_proration_failure,omitempty"`
 	StartImmediately                     bool `xml:"start-immediately,omitempty" json:"start_immediately,omitempty"`
-}
-
-type SubscriptionAddons struct {
-	Add    []SubscriptionAddonAdd    `xml:"add,omitempty" json:"add,omitempty"`
-	Remove []string                  `xml:"remove,omitempty" json:"remove,omitempty"`
-	Update []SubscriptionAddonUpdate `xml:"update,omitempty" json:"update,omitempty"`
-}
-
-type SubscriptionAddonAdd struct {
-	Amount                *Decimal `xml:"amount,omitempty" json:"amount,omitempty"`
-	InheritedFromId       string   `xml:"inherited-from-id,omitempty" json:"inherited_from_id,omitempty"`
-	NeverExpires          bool     `xml:"never-expires,omitempty" json:"never_expires,omitempty"`
-	NumberOfBillingCycles int      `xml:"number-of-billing-cycles,omitempty" json:"number_of_billing_cycles,omitempty"`
-	Quantity              int      `xml:"quantity,omitempty" json:"quantity,omitempty"`
-}
-
-type SubscriptionAddonUpdate struct {
-	Amount                *Decimal `xml:"amount,omitempty" json:"amount,omitempty"`
-	ExistingId            string   `xml:"existing-id,omitempty" json:"existing_id,omitempty"`
-	NeverExpires          bool     `xml:"never-expires,omitempty" json:"never_expires,omitempty"`
-	NumberOfBillingCycles int      `xml:"number-of-billing-cycles,omitempty" json:"number_of_billing_cycles,omitempty"`
-	Quantity              int      `xml:"quantity,omitempty" json:"quantity,omitempty"`
 }
